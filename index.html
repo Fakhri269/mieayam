@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Belanja QRIS - Misi Diskon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #ff9900;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+        header input {
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        #product-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .product {
+            background-color: white;
+            padding: 20px;
+            margin: 15px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 200px;
+        }
+        .product img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .product h3 {
+            margin: 10px 0;
+        }
+        .product p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #333;
+        }
+        .product button {
+            padding: 10px 20px;
+            background-color: #ff9900;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .product button:hover {
+            background-color: #ff7700;
+        }
+
+        /* Popup Keranjang */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .popup-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 350px;
+            max-height: 80%;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .popup-content h2 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .popup-content ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .popup-content li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+        }
+        .popup-content li span {
+            font-weight: bold;
+        }
+        .popup-content .total-price {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .popup-content .discount-message {
+            margin-top: 10px;
+            font-size: 16px;
+            color: green;
+            font-weight: bold;
+        }
+
+        .popup button {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: #ff9900;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px;
+            width: 100%;
+        }
+        .popup button:hover {
+            background-color: #ff7700;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Popup Close Button */
+        .close-btn {
+            background-color: #999;
+        }
+        .close-btn:hover {
+            background-color: #777;
+        }
+
+        .remove-btn {
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .remove-btn:hover {
+            background-color: #cc0000;
+        }
+
+        /* QRIS Payment Popup */
+        #payment-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        #payment-popup .popup-content {
+            width: 400px;
+            padding: 30px;
+            text-align: center;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        #payment-popup .popup-content img {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 20px;
+        }
+        #payment-popup .popup-content h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+        #payment-popup .popup-content p {
+            margin-bottom: 20px;
+        }
+        #payment-popup button {
+            padding: 12px 25px;
+            background-color: #ff9900;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px;
+            width: 100%;
+        }
+        #payment-popup button:hover {
+            background-color: #ff7700;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Selamat datang di Toko Kami!</h1>
+        <input type="text" id="search-bar" placeholder="Mau makan apa hari ini?" onkeyup="searchProducts()">
+    </header>
+
+    <!-- Produk Tersedia -->
+    <section id="product-list">
+        <div class="product" data-name="Bakso" onclick="addToCart('Bakso', 7000)">
+            <img src="baso.jpeg" alt="Bakso" class="product-image">
+            <h3>Bakso</h3>
+            <p>Rp 7.000</p>
+            <button>Tambah ke Keranjang</button>
+        </div>
+        <div class="product" data-name="Mie Ayam" onclick="addToCart('Mie Ayam', 8000, true)">
+            <img src="mie.jpg" alt="Mie Ayam" class="product-image">
+            <h3>Mie Ayam</h3>
+            <p>Rp 8.000</p>
+            <button>Tambah ke Keranjang</button>
+        </div>
+        <div class="product" data-name="Sempol Ayam" onclick="addToCart('Sempol Ayam', 1000)">
+            <img src="sempol.jpg" alt="Sempol Ayam" class="product-image">
+            <h3>Sempol Ayam</h3>
+            <p>Rp 1.000/pcs</p>
+            <button>Tambah ke Keranjang</button>
+        </div>
+    </section>
+
+    <!-- Popup Keranjang Belanja -->
+    <div id="cart-popup" class="popup">
+        <div class="popup-content">
+            <h2>Keranjang Belanja</h2>
+            <ul id="cart-list"></ul>
+            <p id="total-price" class="total-price"></p>
+            <div id="discount-message" class="discount-message"></div>
+            <button class="checkout-btn" onclick="checkout()">Checkout</button>
+            <button class="close-btn" onclick="closeCart()">Tutup</button>
+        </div>
+    </div>
+
+    <!-- Popup Pembayaran QRIS -->
+    <div id="payment-popup" class="popup">
+        <div class="popup-content">
+            <h2>Pembayaran dengan QRIS</h2>
+            <p>Scan QR Code di bawah ini untuk melakukan pembayaran melalui aplikasi e-wallet yang mendukung QRIS.</p>
+            <div id="qris-code">
+                <img src="qrcode.jpg" alt="QRIS Code" />
+            </div>
+            <p>Atau Ke 0813-8418-8044</p>
+            <button class="confirm-btn" onclick="confirmPayment()">Konfirmasi Pembayaran</button>
+            <button class="close-btn" onclick="closePayment()">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+        let totalPrice = 0;
+        let mieAyamCount = 0;
+
+        // Function to handle the search
+        function searchProducts() {
+            const query = document.getElementById('search-bar').value.toLowerCase();
+            const products = document.querySelectorAll('.product');
+
+            products.forEach(product => {
+                const productName = product.getAttribute('data-name').toLowerCase();
+                if (productName.includes(query)) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        }
+
+        // Function to add products to the cart
+        function addToCart(name, price, isMieAyam = false) {
+            cart.push({ name, price });
+            totalPrice += price;
+
+            // If the product is Mie Ayam, increase the counter
+            if (isMieAyam) {
+                mieAyamCount++;
+            }
+
+            updateCart();
+        }
+
+        // Function to update the cart
+        function updateCart() {
+            const cartList = document.getElementById('cart-list');
+            cartList.innerHTML = '';
+            cart.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${item.name} <span>Rp ${item.price}</span>
+                                <button class="remove-btn" onclick="removeFromCart(${index})">Hapus</button>`;
+                cartList.appendChild(li);
+            });
+            document.getElementById('total-price').textContent = `Total: Rp ${totalPrice}`;
+
+            // Display discount message if Mie Ayam count reaches 20
+            const discountMessage = document.getElementById('discount-message');
+            if (mieAyamCount >= 20) {
+                discountMessage.textContent = "Selamat! Anda mendapatkan diskon!";
+            } else {
+                discountMessage.textContent = "";
+            }
+
+            openCart();
+        }
+
+        // Function to remove a product from the cart
+        function removeFromCart(index) {
+            const removedItem = cart.splice(index, 1)[0];
+            totalPrice -= removedItem.price;
+
+            // If the removed item is Mie Ayam, reduce the counter
+            if (removedItem.name === 'Mie Ayam') {
+                mieAyamCount--;
+            }
+
+            updateCart();
+        }
+
+        // Function to open the cart
+        function openCart() {
+            document.getElementById('cart-popup').style.display = 'flex';
+        }
+
+        // Function to close the cart
+        function closeCart() {
+            document.getElementById('cart-popup').style.display = 'none';
+        }
+
+        // Function to checkout and show QRIS payment
+        function checkout() {
+            closeCart();
+            document.getElementById('payment-popup').style.display = 'flex';
+        }
+
+        // Function to confirm payment
+        function confirmPayment() {
+            alert("Pembayaran Sukses Silahkan Tunjukan Bukti Transfer!");
+            closePayment();
+        }
+
+        // Function to close the QRIS payment popup
+        function closePayment() {
+            document.getElementById('payment-popup').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

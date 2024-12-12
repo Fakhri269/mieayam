@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Login</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Style */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #6e7a7f, #d2d6e1);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            overflow: hidden;
+        }
+
+        /* Wrapper for the Login Form */
+        #login-wrapper {
+            width: 100%;
+            max-width: 400px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        /* Title Styling */
+        #login-wrapper h1 {
+            color: #4e73df;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        /* Form Group Styling */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #4e73df;
+        }
+
+        /* Button Styling */
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #4e73df;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3b59b0;
+        }
+
+        /* Error Message Styling */
+        #error-message {
+            color: red;
+            display: none;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* Link Style */
+        a {
+            color: #4e73df;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Fade-out Animation for the whole page */
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="login-wrapper">
+        <h1>Login</h1>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Masukkan Username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Masukkan Password" required>
+            </div>
+            <button type="submit" id="login-btn">Login</button>
+            <p id="error-message">Username atau Password salah!</p>
+        </form>
+        <p>Belum punya akun? <a href="register.html">Daftar di sini</a></p>
+    </div>
+
+    <script>
+        // Mengambil data pengguna yang ada di localStorage
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            // Mencari pengguna yang sesuai
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                // Jika login berhasil
+                document.body.style.animation = 'fadeOut 1s ease-in-out'; // Fade-out effect
+                setTimeout(() => {
+                    window.location.href = "index.html"; // Arahkan ke halaman utama setelah animasi
+                }, 1000); // Delay to let the fade-out animation complete
+            } else {
+                // Tampilkan pesan error jika login gagal
+                const errorMessage = document.getElementById("error-message");
+                errorMessage.style.display = "block";
+                setTimeout(() => errorMessage.style.display = "none", 3000); // Sembunyikan pesan error setelah 3 detik
+            }
+        });
+    </script>
+</body>
+</html>
+
