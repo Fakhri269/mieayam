@@ -17,16 +17,7 @@
             color: white;
             text-align: center;
         }
-        .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 10px;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-}
+    
         header input {
             padding: 10px;
             width: 80%;
@@ -118,27 +109,6 @@
         .popup-content li span {
             font-weight: bold;
         }
-        .navbar .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
-
-.navbar .nav-links li {
-    display: inline-block;
-}
-
-.navbar .nav-links a {
-    color: white;
-    text-decoration: none;
-    padding: 8px 5px;
-    display: block;
-}
-
-.navbar .nav-links a:hover {
-    background-color: #575757;
-    border-radius: 4px;
-}
 
         .popup-content .total-price {
             margin-top: 20px;
@@ -246,6 +216,42 @@
         #payment-popup button:hover {
             background-color: #ff7700;
         }
+        /* Mengatur dasar tampilan halaman */
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  padding: 10px 20px;
+  color: white;
+}
+
+.navbar .menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.navbar .menu li {
+  margin-left: 15px;
+}
+
+.navbar .menu li a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 5px 10px;
+  transition: background-color 0.3s;
+}
+
+.navbar .menu li a:hover {
+  background-color: #555;
+  border-radius: 4px;
+}
+
     </style>
 </head>
 <body>
