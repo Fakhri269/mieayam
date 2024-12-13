@@ -119,6 +119,28 @@
         .popup-content li span {
             font-weight: bold;
         }
+        .navbar .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar .nav-links li {
+    display: inline-block;
+}
+
+.navbar .nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    display: block;
+}
+
+.navbar .nav-links a:hover {
+    background-color: #575757;
+    border-radius: 4px;
+}
+
         .popup-content .total-price {
             margin-top: 20px;
             font-size: 18px;
@@ -228,7 +250,10 @@
     </style>
 </head>
 <body>
-    <navbar><a href="login.html">Login</a></navbar>
+      <nav class="navbar">
+        <ul class="nav-links">
+            <li><a href="login.html">Login</a></li>
+    </nav>
     <!-- Header -->
     <header>
         <h1>Selamat datang di Toko Kami!</h1>
